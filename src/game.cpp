@@ -1,5 +1,6 @@
 #include "game.h"
 #include <iostream>
+#include <algorithm>
 #include "SDL.h"
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
@@ -18,12 +19,13 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
+  Uint32 chaos_timestamp = SDL_GetTicks();
 
   while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
+    HandleInput(controller, running);
     Update();
     renderer.Render(snake, food);
 
@@ -36,18 +38,29 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer.UpdateWindowTitle(score, frame_count, snake.health);
       frame_count = 0;
       title_timestamp = frame_end;
     }
-
+  
     // If the time for this frame is too small (i.e. frame_duration is
     // smaller than the target ms_per_frame), delay the loop to
     // achieve the correct frame rate.
     if (frame_duration < target_frame_duration) {
       SDL_Delay(target_frame_duration - frame_duration);
     }
+
+    // Checks if chaos should be started
+    CheckChaos(renderer, frame_end, chaos_timestamp);
   }
+}
+
+void Game::HandleInput(Controller const &controller, bool &running){
+    std::thread t([this, &controller, &running]() {
+        controller.HandleInput(running, snake);
+        });
+
+    t.join();
 }
 
 void Game::PlaceFood() {
@@ -74,6 +87,11 @@ void Game::Update() {
   int new_y = static_cast<int>(snake.head_y);
 
   // Check if there's food over here
+  CheckForFood(new_x, new_y);
+}
+
+void Game::CheckForFood(int new_x, int new_y)
+{
   if (food.x == new_x && food.y == new_y) {
     score++;
     PlaceFood();

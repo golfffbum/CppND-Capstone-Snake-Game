@@ -59,7 +59,15 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
   for (auto const &item : body) {
     if (current_head_cell.x == item.x && current_head_cell.y == item.y) {
       alive = false;
+      std::cout << "GAME OVER!" << "\n";
     }
+  }
+
+  //Check health
+  if (health <= 0)
+  {
+    alive = false;
+    std::cout << "GAME OVER!" << "\n";
   }
 }
 
@@ -76,4 +84,4 @@ bool Snake::SnakeCell(int x, int y) {
     }
   }
   return false;
-}
+} 

@@ -1,5 +1,27 @@
 # CPPND: Capstone Snake Game Example
 
+For my capstone I have chosen to modify the snake game to include a new mode called Chaos Mode. Below I call out which rubric items I have completed.
+
+## Rubric callouts 
+- A README with instructions is included with the project & The README indicates which project is chosen. & The README includes information about each rubric point addressed. 
+  - this file
+1. The project demonstrates an understanding of C++ functions and control structures.
+  - Added a new control structure to handle showing/hiding obstacles at specific times
+  - Handled updating snake health when obstacle is hit 
+  - New logic to invert colors at specific times
+2. The project accepts user input and processes the input.
+  - The game accepts user input to decide which mode to run in, see class `Menu`
+3. The project uses Object Oriented Programming techniques. & Classes follow an appropriate inheritance hierarchy.
+  - I created a new class `GameChaos` that inherits from `Game` class
+4. Classes use appropriate access specifiers for class members.
+  - With the use of inheritance data memebers were changed to protected and public as needed, anything only used by `GameChaos` was set to private
+5. Derived class functions override virtual base class functions.
+  - `GameChaos` overrides `Game`'s the following virtual base classes, `Update()`, `CheckChaos()`
+6. The project makes use of references in function declarations.
+  - Many places, see `CheckChaos(Renderer &renderer, Uint32 frame_end, Uint32 &chaos_timestamp)`
+7. The project uses multithreading.
+  - In `Game` I used threading to call controller's HandleInput() in a seperate thread 
+
 This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
 
 <img src="snake_game.gif"/>
@@ -22,7 +44,8 @@ In this project, you can build your own C++ application or extend this Snake gam
   * Linux: gcc / g++ is installed by default on most Linux distros
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
   * Windows: recommend using [MinGW](http://www.mingw.org/)
-
+* SDL_ttf 2.0 
+  * `sudo apt-get install libsdl2-ttf-dev`
 ## Basic Build Instructions
 
 1. Clone this repo.
